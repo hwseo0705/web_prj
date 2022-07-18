@@ -42,14 +42,14 @@ public class BoardController {
     @GetMapping("/write")
     public String write() {
         log.info("controller request /board/write GET!");
-        return "";
+        return "board/board-write";
     }
 
     // 게시물 등록 요청
-    @PostMapping("/write")
+    @PostMapping("/write") // RequestBody for RESTful
     public String write(/*@RequestBody*/ Board board) {
         log.info("controller request /board/write POST! - {}", board);
-        boardService.saveService(board);
-        return "";
+        boolean flag = boardService.saveService(board);
+        return flag ? "redirect:/board/list" : "redirect:/";
     }
 }
