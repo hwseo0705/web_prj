@@ -5,9 +5,8 @@ import com.project.web_prj.board.service.BoardService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -21,11 +20,13 @@ public class BoardController {
 
     // 게시물 목록 요청
     @GetMapping("/list")
-    public String list() {
+    public String list(Model model) {
         log.info("controller request /board/list GET!");
         List<Board> boardList = boardService.findAllService();
         log.info("return data - {}", boardList);
-        return "";
+
+        model.addAttribute("bList", boardList);
+        return "board/board-list";
     }
 
     // 게시물 상세 조회 요청
@@ -44,4 +45,11 @@ public class BoardController {
         return "";
     }
 
+    // 게시물 등록 요청
+    @PostMapping("/write")
+    public String write(/*@RequestBody*/ Board board) {
+        log.info("controller request /board/write POST! - {}", board);
+        boardService.saveService(board);
+        return "";
+    }
 }
