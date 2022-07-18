@@ -5,10 +5,13 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.dao.DataAccessException;
+import org.springframework.test.annotation.Rollback;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 class BoardRepositoryImplTest {
@@ -39,4 +42,42 @@ class BoardRepositoryImplTest {
         assertEquals(300, boardList.size());
     }
 
+    @Test
+    @DisplayName("특정 게시물을 조회하고 글제목이 일치해야 한다.")
+    void findOneTest() {
+        Board board = repository.findOne(300L);
+        assertEquals("제목300", board.getTitle());
+    }
+
+    @Test
+    @DisplayName("특정 게시물을 삭제하고 해당 글이 조회되지 않아야 한다.")
+    @Transactional
+    @Rollback
+    void removeTest() {
+        boolean remove = repository.remove(300L);
+        assertTrue(remove);
+        assertThrows(DataAccessException.class, () -> repository.findOne(300L));
+    }
+
+    @Test
+    @DisplayName("특정 게시물을 수정하고 해당 글을 조회했을 때 수정된 제목이 일치해야 한다.")
+    @Transactional
+    @Rollback
+    void modifyTest() {
+        // given
+        Board newBoard = new Board();
+        newBoard.setBoardNo(300L);
+        newBoard.setTitle("수정된 제목");
+        newBoard.setWriter("수정된 작성자");
+        newBoard.setContent("메롱메롱");
+
+        // when
+        boolean modify = repository.modify(newBoard);
+        Board board = repository.findOne(newBoard.getBoardNo());
+
+        // then
+        assertTrue(modify);
+        assertEquals("수정된 제목", board.getTitle());
+        assertEquals("수정된 작성자", board.getWriter());
+    }
 }
