@@ -45,4 +45,11 @@ public class BoardRepositoryImpl implements BoardRepository {
         String sql = "UPDATE tbl_board SET writer = ?, title = ?, content = ? WHERE board_no = ?";
         return template.update(sql, board.getWriter(), board.getTitle(), board.getContent(), board.getBoardNo()) == 1;
     }
+
+    @Override
+    public int getTotalCount() {
+        String sql = "SELECT COUNT(*) AS cnt FROM tbl_board";
+//        return template.queryForObject(sql, (rs, rn) -> rs.getInt("cnt"));
+        return template.queryForObject(sql, Integer.class);
+    }
 }
