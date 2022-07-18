@@ -31,11 +31,13 @@ public class BoardController {
 
     // 게시물 상세 조회 요청
     @GetMapping("/content/{boardNo}")
-    public String content(@PathVariable Long boardNo) {
+    public String content(@PathVariable Long boardNo, Model model) {
         log.info("controller request /board/content GET! - {}", boardNo);
         Board board = boardService.findOneService(boardNo);
         log.info("return data - {}", board);
-        return "";
+
+        model.addAttribute("b", board);
+        return "board/board-detail";
     }
 
     // 게시물 쓰기 화면 요청

@@ -50,9 +50,9 @@
                     <tr>
                         <td>${b.boardNo}</td>
                         <td>${b.writer}</td>
-                        <td>${b.title}</td>
+                        <td title="${b.title}">${b.shortTitle}</td>
                         <td>0</td>
-                        <td></td>
+                        <td>${b.prettierDate}</td>
                     </tr>
                 </c:forEach>
             </table>
@@ -78,7 +78,7 @@
             let bn = e.target.parentElement.firstElementChild.textContent;
             console.log('글번호: ' + bn);
 
-            location.href = '/board/content?boardNo=' + bn;
+            location.href = '/board/content/' + bn;
         });
 
     </script>
