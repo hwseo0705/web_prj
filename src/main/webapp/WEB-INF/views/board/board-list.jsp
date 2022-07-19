@@ -59,8 +59,8 @@
         }
 
         .pagination-custom li .background {
-            background: #111;
-            columns: #fff;
+            background: #555 !important;
+            color: #fff !important;
         }
     </style>
 </head>
