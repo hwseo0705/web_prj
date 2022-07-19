@@ -14,7 +14,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Service
 @Log4j2
@@ -41,14 +43,20 @@ public class BoardService {
     }
 
     // 게시물 전체 조회 요청 중간 처리
-    public List<Board> findAllService(Page page) {
+    public Map<String, Object> findAllService(Page page) {
         log.info("findAll service start");
+
+        Map<String, Object> findDataMap = new HashMap<>();
+
         List<Board> boardList = repository.findAll(page);
 
         // 목록 중간 데이터 처리
         processConverting(boardList);
 
-        return boardList;
+        findDataMap.put("bList", boardList);
+        findDataMap.put("tc", repository.getTotalCount());
+
+        return findDataMap;
     }
 
     private void processConverting(List<Board> boardList) {
