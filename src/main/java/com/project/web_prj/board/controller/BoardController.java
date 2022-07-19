@@ -6,8 +6,14 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 
 @Controller
@@ -31,9 +37,9 @@ public class BoardController {
 
     // 게시물 상세 조회 요청
     @GetMapping("/content/{boardNo}")
-    public String content(@PathVariable Long boardNo, Model model) {
+    public String content(@PathVariable Long boardNo, Model model, HttpServletResponse response, HttpServletRequest request) {
         log.info("controller request /board/content GET! - {}", boardNo);
-        Board board = boardService.findOneService(boardNo);
+        Board board = boardService.findOneService(boardNo, response, request);
         log.info("return data - {}", board);
 
         model.addAttribute("b", board);
@@ -49,9 +55,13 @@ public class BoardController {
 
     // 게시물 등록 요청
     @PostMapping("/write") // RequestBody for RESTful
-    public String write(/*@RequestBody*/ Board board) {
+    public String write(/*@RequestBody*/ Board board, RedirectAttributes ra) {
         log.info("controller request /board/write POST! - {}", board);
         boolean flag = boardService.saveService(board);
+        // 게시물 등록이 성공하면 클라이언트에 성공 메시지 전송
+        // if (flag) model.addAttribute("msg", "reg-success"); // redirect 되는순간 reg-success 데이터가 날라감
+        if (flag) ra.addFlashAttribute("msg", "reg-success");
+
         return flag ? "redirect:/board/list" : "redirect:/";
     }
 
@@ -64,9 +74,9 @@ public class BoardController {
 
     // 게시글 수정 화면 요청
     @GetMapping("/modify")
-    public String modify(Long boardNo, Model model) {
+    public String modify(Long boardNo, Model model, HttpServletResponse response, HttpServletRequest request) {
         log.info("controller request /board/modify GET! - bno: {}", boardNo);
-        Board board = boardService.findOneService(boardNo);
+        Board board = boardService.findOneService(boardNo, response, request);
         log.info("article found: {}", board);
 
         model.addAttribute("board", board);

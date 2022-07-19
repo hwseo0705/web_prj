@@ -5,7 +5,12 @@ import com.project.web_prj.board.repository.BoardRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.util.WebUtils;
 
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
@@ -61,8 +66,34 @@ public class BoardService {
     }
 
     // 게시물 상세 조회 요청 중간 처리
-    public Board findOneService(Long boardNo) {
+    @Transactional // sql 여러개 실행할 때 하나라도 실패하면 롤백 시켜준다.
+    public Board findOneService(Long boardNo, HttpServletResponse response, HttpServletRequest request) {
         log.info("findOne service start - {}", boardNo);
+
+        /*
+         *
+         *   쿠키 : http가 데이터를 기억하지 못한다 (로그인 했던 사실을 기억하지 못함)
+         *         쿠키에 데이터를 저장하고 유효기간도 저장하여 같이 서버에서 클라이언트로 보냄, 로컬에 저장
+         *         다음에 로그인을 요청 했을때, 쿠키를 찾아서 존재할 경우 로그인을 다시 하지 않아도 됨
+         *
+         * */
+
+        // 해당 게시물 번호에 해당하는 쿠키가 있는지 확인
+        // 쿠키가 없으면 조회수를 상승시켜주고 쿠키를 만들어서 클라이언트에 전송
+
+        // 쿠키를 조회 - 해당 이름의 쿠키가 있으면 쿠키가 들어오고 없으면 null 들어옴
+        Cookie foundCookie = WebUtils.getCookie(request, "b" + boardNo);
+
+        if (foundCookie == null) {
+            repository.upViewCount(boardNo);
+
+            Cookie cookie = new Cookie("b" + boardNo, String.valueOf(boardNo));// 쿠키 생성
+            cookie.setMaxAge(60); // set cookie life : 1 min
+            cookie.setPath("/board/content/"); // 쿠키 작동 범위
+
+            response.addCookie(cookie);
+        }
+
         return repository.findOne(boardNo);
     }
 

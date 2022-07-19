@@ -51,7 +51,7 @@
                         <td>${b.boardNo}</td>
                         <td>${b.writer}</td>
                         <td title="${b.title}">${b.shortTitle}</td>
-                        <td>0</td>
+                        <td>${b.viewCnt}</td>
                         <td>${b.prettierDate}</td>
                     </tr>
                 </c:forEach>
@@ -68,6 +68,11 @@
     </div>
 
     <script>
+
+        const msg = '${msg}';
+        console.log('msg: ', msg);
+        if (msg === 'reg-success') alert('게시물이 정상 등록되었습니다.')
+
         //상세보기 요청 이벤트
         const $table = document.querySelector(".articles");
         $table.addEventListener('click', e => {
