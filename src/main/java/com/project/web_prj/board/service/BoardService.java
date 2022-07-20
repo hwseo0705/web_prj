@@ -58,7 +58,7 @@ public class BoardService {
         processConverting(boardList);
 
         findDataMap.put("bList", boardList);
-        findDataMap.put("tc", repository.getTotalCount());
+//        findDataMap.put("tc", repository.getTotalCount(search));
 
         return findDataMap;
     }
@@ -75,7 +75,7 @@ public class BoardService {
         processConverting(boardList);
 
         findDataMap.put("bList", boardList);
-        findDataMap.put("tc", repository.getTotalCount());
+        findDataMap.put("tc", repository.getTotalCount(search));
 
         return findDataMap;
     }

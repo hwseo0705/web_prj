@@ -40,7 +40,8 @@
         <if test="type == 'writer'">WHERE writer LIKE '%' || #{keyword} || '%'</if>
         <if test="type == 'content'">WHERE content LIKE '%' || #{keyword} || '%'</if>
         <if test="type == 'tc'">WHERE title LIKE '%' || #{keyword} || '%'
-                        OR content LIKE '%' || #{keyword} || '%' </if>
+            OR content LIKE '%' || #{keyword} || '%'
+        </if>
         ORDER BY board_no DESC
         ) v_board
         )
@@ -66,6 +67,12 @@
     <select id="getTotalCount" resultType="int">
         SELECT COUNT(*)
         FROM tbl_board
+        <if test="type == 'title'">WHERE title LIKE '%' || #{keyword} || '%'</if>
+        <if test="type == 'writer'">WHERE writer LIKE '%' || #{keyword} || '%'</if>
+        <if test="type == 'content'">WHERE content LIKE '%' || #{keyword} || '%'</if>
+        <if test="type == 'tc'">WHERE title LIKE '%' || #{keyword} || '%'
+            OR content LIKE '%' || #{keyword} || '%'
+        </if>
     </select>
 
     <update id="upViewCount">
