@@ -1,6 +1,7 @@
 package com.project.web_prj.board.service;
 
 import com.project.web_prj.board.domain.Board;
+import com.project.web_prj.board.repository.BoardMapper;
 import com.project.web_prj.board.repository.BoardRepository;
 import com.project.web_prj.common.paging.Page;
 import lombok.RequiredArgsConstructor;
@@ -23,7 +24,9 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class BoardService {
 
-    private final BoardRepository repository;
+    // private final BoardRepository repository;
+
+    private final BoardMapper repository;
 
     // 게시물 등록 요청 중간 처리
     public boolean saveService(Board board) {

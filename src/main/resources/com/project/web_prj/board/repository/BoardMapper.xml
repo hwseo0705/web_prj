@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.project.web_prj.board.repository.BoardMapper">
+
+    <insert id="save">
+        INSERT INTO tbl_board (board_no, writer, title, content) VALUES (seq_tbl_board.nextval, #{writer}, #{title},
+        #{content})
+    </insert>
+
+    <delete id="remove">
+        DELETE FROM tbl_board WHERE board_no=#{boardNo}
+    </delete>
+
+    <resultMap id="boardMap" type="com.project.web_prj.board.domain.Board">
+        <result column="board_no" property="boardNo"/>
+        <result column="view_cnt" property="viewCnt"/>
+        <result column="reg_date" property="regDate"/>
+    </resultMap>
+
+    <select id="findAll" resultMap="boardMap">
+        SELECT *
+        FROM (SELECT ROWNUM rn, v_board.*
+        FROM (
+        SELECT *
+        FROM tbl_board
+        ORDER BY board_no DESC
+        ) v_board )
+        WHERE rn BETWEEN (#{pageNum} - 1) * #{amount} AND (#{pageNum} * #{amount})
+    </select>
+
+    <select id="findOne" resultMap="boardMap">
+        SELECT * FROM tbl_board WHERE board_no=#{boardNo}
+    </select>
+
+    <update id="modify">
+        UPDATE tbl_board SET writer = #{writer}, title = #{title}, content = #{content} WHERE board_no = #{boardNo}
+    </update>
+
+    <select id="getTotalCount" resultType="int">
+        SELECT COUNT(*) AS cnt FROM tbl_board
+    </select>
+
+    <update id="upViewCount">
+        UPDATE tbl_board SET view_cnt = view_cnt + 1 WHERE board_no = #{boardNo}
+    </update>
+
+</mapper>
