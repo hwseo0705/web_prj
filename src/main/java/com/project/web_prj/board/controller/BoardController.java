@@ -8,10 +8,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.http.HttpServletRequest;
@@ -42,7 +39,7 @@ public class BoardController {
 
     // 게시물 상세 조회 요청
     @GetMapping("/content/{boardNo}")
-    public String content(@PathVariable Long boardNo, Model model, HttpServletResponse response, HttpServletRequest request) {
+    public String content(@PathVariable Long boardNo, @ModelAttribute("p") Page page, Model model, HttpServletResponse response, HttpServletRequest request) {
         log.info("controller request /board/content GET! - {}", boardNo);
         Board board = boardService.findOneService(boardNo, response, request);
         log.info("return data - {}", board);
