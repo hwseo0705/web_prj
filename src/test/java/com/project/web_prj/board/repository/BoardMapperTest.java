@@ -18,7 +18,7 @@ class BoardMapperTest {
     @Test
     @DisplayName("제목으로 검색된 목록")
     void searchByTitleTest() {
-        Search search = new Search(new Page(1, 10), "tc", "글제");
+        Search search = new Search("tc", "글제");
         mapper.findAll2(search).forEach(System.out::println);
     }
 }
