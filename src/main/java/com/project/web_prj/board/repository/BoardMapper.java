@@ -2,6 +2,7 @@ package com.project.web_prj.board.repository;
 
 import com.project.web_prj.board.domain.Board;
 import com.project.web_prj.common.paging.Page;
+import com.project.web_prj.common.search.Search;
 import org.apache.ibatis.annotations.Mapper;
 
 import java.util.List;
@@ -17,6 +18,9 @@ public interface BoardMapper {
 
     // 게시글 전체 조회 with paging
     List<Board> findAll(Page page);
+
+    // 게시글 전체 조회 with search
+    List<Board> findAll2(Search search);
 
     // 게시글 상세 조회
     Board findOne(Long boardNo);
