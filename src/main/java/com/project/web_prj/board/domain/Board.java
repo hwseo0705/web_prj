@@ -21,6 +21,7 @@ public class Board {
     // Custom Table Fields
     private String shortTitle;
     private String prettierDate;
+    private boolean newArticle; // 신규 게시물 여부
 
     public Board(ResultSet rs) throws SQLException {
         this.boardNo = rs.getLong("board_no");

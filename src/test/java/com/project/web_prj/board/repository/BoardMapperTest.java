@@ -1,13 +1,10 @@
 package com.project.web_prj.board.repository;
 
-import com.project.web_prj.common.paging.Page;
 import com.project.web_prj.common.search.Search;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 class BoardMapperTest {
