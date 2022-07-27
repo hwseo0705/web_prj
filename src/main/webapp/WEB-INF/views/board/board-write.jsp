@@ -27,7 +27,7 @@
                     <label for="writer-input" class="form-label">작성자</label>
                     <input type="text" class="form-control" id="writer-input" placeholder="이름" name="writer">
                 </div>
-                <div class="mb-3">
+                <div class="mb-3"> 
                     <label for="title-input" class="form-label">글제목</label>
                     <input type="text" class="form-control" id="title-input" placeholder="제목" name="title">
                 </div>
