@@ -4,6 +4,7 @@ import com.project.web_prj.board.domain.Board;
 import com.project.web_prj.board.repository.BoardMapper;
 import com.project.web_prj.common.paging.Page;
 import com.project.web_prj.common.search.Search;
+import com.project.web_prj.reply.repository.ReplyMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Service;
@@ -26,18 +27,19 @@ public class BoardService {
 
     // private final BoardRepository repository;
 
-    private final BoardMapper repository;
+    private final BoardMapper boardMapper;
+    private final ReplyMapper replyMapper;
 
     // 게시물 등록 요청 중간 처리
     public boolean saveService(Board board) {
         log.info("save service start - {}", board);
-        return repository.save(board);
+        return boardMapper.save(board);
     }
 
     // 게시물 전체 조회 요청 중간 처리
     public List<Board> findAllService() {
         log.info("findAll service start");
-        List<Board> boardList = repository.findAll();
+        List<Board> boardList = boardMapper.findAll();
 
         // 목록 중간 데이터 처리
         processConverting(boardList);
@@ -51,7 +53,7 @@ public class BoardService {
 
         Map<String, Object> findDataMap = new HashMap<>();
 
-        List<Board> boardList = repository.findAll(page);
+        List<Board> boardList = boardMapper.findAll(page);
 
         // 목록 중간 데이터 처리
         processConverting(boardList);
@@ -68,13 +70,13 @@ public class BoardService {
 
         Map<String, Object> findDataMap = new HashMap<>();
 
-        List<Board> boardList = repository.findAll2(search);
+        List<Board> boardList = boardMapper.findAll2(search);
 
         // 목록 중간 데이터 처리
         processConverting(boardList);
 
         findDataMap.put("bList", boardList);
-        findDataMap.put("tc", repository.getTotalCount(search));
+        findDataMap.put("tc", boardMapper.getTotalCount(search));
 
         return findDataMap;
     }
@@ -86,7 +88,12 @@ public class BoardService {
             // 시간 FORMAT 처리
             convertDateFormat(b);
             checkNewArticle(b);
+            setReplyCount(b);
         }
+    }
+
+    private void setReplyCount(Board b) {
+        b.setReplyCount(replyMapper.getReplyCount(b.getBoardNo()));
     }
 
     // 신규 게시물 여부 처리
@@ -147,7 +154,7 @@ public class BoardService {
         Cookie foundCookie = WebUtils.getCookie(request, "b" + boardNo);
 
         if (foundCookie == null) {
-            repository.upViewCount(boardNo);
+            boardMapper.upViewCount(boardNo);
 
             Cookie cookie = new Cookie("b" + boardNo, String.valueOf(boardNo));// 쿠키 생성
             cookie.setMaxAge(60); // set cookie life : 1 min
@@ -156,18 +163,24 @@ public class BoardService {
             response.addCookie(cookie);
         }
 
-        return repository.findOne(boardNo);
+        return boardMapper.findOne(boardNo);
     }
 
     // 게시물 삭제 요청 중간 처리
+    @Transactional
     public boolean removeService(Long boardNo) {
         log.info("remove service start - {}", boardNo);
-        return repository.remove(boardNo);
+
+        // 댓글 먼저 모두 삭제
+        replyMapper.removeAll(boardNo);
+        // 원본 게시물 삭제
+        boolean remove = boardMapper.remove(boardNo);
+        return remove;
     }
 
     // 게시물 수정 요청 중간 처리
     public boolean modifyService(Board board) {
         log.info("modify service start - {}", board);
-        return repository.modify(board);
+        return boardMapper.modify(board);
     }
 }

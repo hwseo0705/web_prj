@@ -6,15 +6,19 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Date;
 
-@Setter @Getter @ToString @EqualsAndHashCode
-@NoArgsConstructor @AllArgsConstructor // Necessary
+@Setter
+@Getter
+@ToString
+@EqualsAndHashCode
+@NoArgsConstructor
+@AllArgsConstructor // Necessary
 public class Board {
 
     // Table Column Fields
     private Long boardNo;
     private String writer;
-    private  String title;
-    private  String content;
+    private String title;
+    private String content;
     private Long viewCnt;
     private Date regDate;
 
@@ -22,6 +26,7 @@ public class Board {
     private String shortTitle;
     private String prettierDate;
     private boolean newArticle; // 신규 게시물 여부
+    private int replyCount; // 댓글수
 
     public Board(ResultSet rs) throws SQLException {
         this.boardNo = rs.getLong("board_no");
