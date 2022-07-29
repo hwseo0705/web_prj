@@ -24,13 +24,16 @@ public class ReplyService {
         Map<String, Object> replyMap = new HashMap<>();
         replyMap.put("replyList", replyMapper.findAll(boardNo, page));
         replyMap.put("maker", maker);
+        replyMap.put("count", replyMapper.getReplyCount(boardNo));
 
         return replyMap;
     }
+
     //댓글 총 개수 조회
     public int getCount(Long boardNo) {
         return replyMapper.getReplyCount(boardNo);
     }
+
     //댓글 개별 조회
     public Reply get(Long replyNo) {
         return replyMapper.findOne(replyNo);
@@ -45,6 +48,7 @@ public class ReplyService {
     public boolean modify(Reply reply) {
         return replyMapper.modify(reply);
     }
+
     //댓글 삭제 중간처리
     public boolean remove(Long replyNo) {
         return replyMapper.remove(replyNo);
