@@ -273,7 +273,11 @@
             }
 
             // 페이지 태그 렌더링
-            document.querySelector('.pagination').innerHTML = tag;
+            const $pageUl = document.querySelector('.pagination')
+            $pageUl.innerHTML = tag;
+
+            // ul에 마지막페이지 번호 저장
+            $pageUl.dataset.fp = pageInfo.finalPage;
         }
 
         // 댓글 목록 DOM을 생성하는 함수
@@ -319,7 +323,7 @@
 
             // 페이지 버튼 클릭이벤트 처리
             const $pageUl = document.querySelector('.pagination');
-            $pageUl.addEventListener('click', e => {
+            $pageUl.onclick = e => {
                 if (!e.target.matches('.page-item a')) return;
 
                 e.preventDefault();
@@ -330,12 +334,11 @@
 
                 // 페이지 번호에 맞는 목록 비동기 오청
                 showReplies(pageNum);
-
-            });
+            };
         }
 
         // 댓글 목록을 서버로부터 비동기 요청으로 불러오는 함수
-        function showReplies(pageNum=1) {
+        function showReplies(pageNum = 1) {
             fetch(URL + '?boardNo=' + bno + '&pageNum=' + pageNum)
                 .then(res => res.json())
                 .then(replyMap => {
@@ -343,9 +346,124 @@
                 });
         }
 
+        // 댓글 삭제 함수
+        function delReply() {
+            document.getElementById('replyData').onclick = e => {
+                if (!e.target.matches('#replyDelBtn')) return;
+
+                e.preventDefault();
+
+                // const rno = e.target.parentElement.parentElement.parentElement.dataset.replyid;
+                const rno = e.target.closest('#replyContent').dataset.replyid;
+
+                console.log(rno);
+
+                fetch(URL + '/' + rno, {
+                        method: 'DELETE'
+                    })
+                    .then(res => {
+                        if (res.status === 200) return res.text();
+                        return null;
+                    })
+                    .then(msg => {
+                        if (msg === 'del-success') alert('삭제 성공!');
+                        else alert('삭제 실패!');
+                    })
+                    .catch(err => alert('통신 실패!'));
+            }
+        }
+
+        // 새 댓글 등록 함수
+        function addReplies() {
+
+            document.getElementById('replyAddBtn').onclick = e => {
+                e.preventDefault();
+
+                // GET을 제외한 다른 요청방식에는 요청초기화정보객체가 추가필요
+                const reqObj = {
+                    method: 'POST', // 요청방식
+                    headers: {
+                        'content-type': 'application/json'
+                    }, // 요청 헤더 정보
+                    body: JSON.stringify({
+                        replyWriter: document.querySelector('[name=replyWriter]').value,
+                        replyText: document.querySelector('[name=replyText]').value,
+                        boardNo: bno
+                    }) // payload 정보 - 서버로 보낼 json 데이터
+                };
+
+                // fetch요청 (POST)
+                fetch(URL, reqObj)
+                    .then(res => res.text())
+                    .then(resultMsg => {
+                        console.log(resultMsg);
+                        if (resultMsg === 'insert-success') {
+                            alert('댓글 등록 성공!');
+                        } else {
+                            alert('댓글 등록 실패!');
+                        }
+                    });
+            }
+
+        }
+
+        // 댓글 등록 이벤트 처리 핸들러 등록 함수
+        function makeReplyRegisterClickEvent(e) {
+
+            document.getElementById('replyAddBtn').onclick = makeReplyRegisterClickHandler;
+        }
+
+
+        // 댓글 등록 이벤트 처리 핸들러 함수
+        function makeReplyRegisterClickHandler(e) {
+
+            const $writerInput = document.getElementById('newReplyWriter');
+            const $contentInput = document.getElementById('newReplyText');
+
+
+            // 서버로 전송할 데이터들
+            const replyData = {
+                replyWriter: $writerInput.value,
+                replyText: $contentInput.value,
+                boardNo: bno
+            };
+
+            // POST 요청을 위한 요청 정보 객체
+            const reqInfo = {
+                method: 'POST',
+                headers: {
+                    'content-type': 'application/json'
+                },
+                body: JSON.stringify(replyData)
+            };
+
+            fetch(URL, reqInfo)
+                .then(res => res.text())
+                .then(msg => {
+                    if (msg === 'insert-success') {
+                        alert('댓글 등록 성공!');
+                        // 댓글 입력창 리셋
+                        $writerInput.value = '';
+                        $contentInput.value = '';
+                        // 댓글 목록 재요청
+                        showReplies(document.querySelector('.pagination').dataset.fp);
+                    } else {
+                        alert('댓글 등록 실패!');
+                    }
+                })
+        }
+
         // 메인 즉시 실행부
         (function () {
+            // 초기화면 렌더링시 댓글 1페이지 렌더링
             showReplies();
+
+            // -----ME----- //
+            // addReplies();
+            // delReply();
+            // ---------- //
+
+            makeReplyRegisterClickEvent();
         })();
     </script>
 
