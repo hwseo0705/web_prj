@@ -5,6 +5,7 @@ import lombok.*;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Date;
+import java.util.List;
 
 @Setter
 @Getter
@@ -27,6 +28,8 @@ public class Board {
     private String prettierDate;
     private boolean newArticle; // 신규 게시물 여부
     private int replyCount; // 댓글수
+    
+    private List<String> fileNames; // 첨부파일들의 이름 목록
 
     public Board(ResultSet rs) throws SQLException {
         this.boardNo = rs.getLong("board_no");
