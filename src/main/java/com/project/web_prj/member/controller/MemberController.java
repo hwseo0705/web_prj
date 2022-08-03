@@ -15,6 +15,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
+
 @Controller
 @Log4j2
 @RequiredArgsConstructor
@@ -54,17 +57,37 @@ public class MemberController {
 
     // 로그인 요청 처리
     @PostMapping("/sign-in")
-    public String signIn(LoginDTO inputData, RedirectAttributes ra) {
+    public String signIn(LoginDTO inputData, RedirectAttributes ra,
+                         HttpSession session) { // 세션정보 객체
         log.info("/member/sign-in POST - {}", inputData);
+        // log.info("session timeout : {}", session.getMaxInactiveInterval());
 
         // 로그인 서비스 호출
-        LoginFlag flag = memberService.login(inputData);
+        LoginFlag flag = memberService.login(inputData, session);
+
         if (flag == LoginFlag.SUCCESS) {
             log.info("login success!!!");
             return "redirect:/";
         }
 
         ra.addFlashAttribute("loginMsg", flag);
+        return "redirect:/member/sign-in";
+    }
+
+    // 쿠키는 서버에서 클라이언트에게 주고, 세션은 클라이언트에게 주지 않는다.
+    // 세션은 브라우저가 꺼지면 세션 정보도 없어짐, 쿠키는 남아있음
+
+    @GetMapping("/sign-out")
+    public String signOut(HttpSession session) {
+
+        if (session.getAttribute("loginUser") != null) {
+            // 1. 세션에서 정보를 삭제한다.
+            session.removeAttribute("loginUser");
+
+            // 2. 세션을 무효화한다.
+            session.invalidate();
+            return "redirect:/";
+        }
         return "redirect:/member/sign-in";
     }
 }
