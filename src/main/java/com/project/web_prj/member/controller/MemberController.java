@@ -26,8 +26,9 @@ public class MemberController {
 
     private final MemberService memberService;
 
+    // 회원가입 양식 띄우기 요청
     @GetMapping("/sign-up")
-    public void signUp() { // 요청 URL & 포워딩 경로가 같을 경우 -> void 가능
+    public void signUp() {
         log.info("/member/sign-up GET! - forwarding to sign-up.jsp");
     }
 
@@ -46,36 +47,46 @@ public class MemberController {
     public ResponseEntity<Boolean> check(String type, String value) {
         log.info("/member/check?type={}&value={} GET!! ASYNC", type, value);
         boolean flag = memberService.checkSignUpValue(type, value);
+
         return new ResponseEntity<>(flag, HttpStatus.OK);
     }
 
     // 로그인 화면을 열어주는 요청처리
     @GetMapping("/sign-in")
-    public void signIn() {
+    public void signIn(HttpServletRequest request) {
         log.info("/member/sign-in GET! - forwarding to sign-in.jsp");
+
+        // 요청 정보 헤더 안에는 Referer라는 키가 있는데
+        // 여기 안에는 이 페이지로 진입할 때 어디에서 왔는지 URI정보가 들어있음.
+        String referer = request.getHeader("Referer");
+        log.info("referer: {}", referer);
+
+
+        request.getSession().setAttribute("redirectURI", referer);
     }
 
     // 로그인 요청 처리
     @PostMapping("/sign-in")
-    public String signIn(LoginDTO inputData, RedirectAttributes ra,
-                         HttpSession session) { // 세션정보 객체
+    public String signIn(LoginDTO inputData
+            , RedirectAttributes ra
+            , HttpSession session // 세션정보 객체
+    ) {
+
         log.info("/member/sign-in POST - {}", inputData);
-        // log.info("session timeout : {}", session.getMaxInactiveInterval());
+//        log.info("session timeout : {}", session.getMaxInactiveInterval());
 
         // 로그인 서비스 호출
         LoginFlag flag = memberService.login(inputData, session);
 
         if (flag == LoginFlag.SUCCESS) {
-            log.info("login success!!!");
-            return "redirect:/";
+            log.info("login success!!");
+            String redirectURI = (String) session.getAttribute("redirectURI");
+            return "redirect:" + redirectURI;
         }
-
         ra.addFlashAttribute("loginMsg", flag);
         return "redirect:/member/sign-in";
-    }
 
-    // 쿠키는 서버에서 클라이언트에게 주고, 세션은 클라이언트에게 주지 않는다.
-    // 세션은 브라우저가 꺼지면 세션 정보도 없어짐, 쿠키는 남아있음
+    }
 
     @GetMapping("/sign-out")
     public String signOut(HttpSession session) {
@@ -90,4 +101,5 @@ public class MemberController {
         }
         return "redirect:/member/sign-in";
     }
+
 }
