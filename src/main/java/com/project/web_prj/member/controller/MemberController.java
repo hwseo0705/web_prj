@@ -9,6 +9,7 @@ import lombok.extern.log4j.Log4j2;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -68,7 +69,7 @@ public class MemberController {
     // 로그인 요청 처리
     @PostMapping("/sign-in")
     public String signIn(LoginDTO inputData
-            , RedirectAttributes ra
+            , Model model
             , HttpSession session // 세션정보 객체
     ) {
 
@@ -83,8 +84,8 @@ public class MemberController {
             String redirectURI = (String) session.getAttribute("redirectURI");
             return "redirect:" + redirectURI;
         }
-        ra.addFlashAttribute("loginMsg", flag);
-        return "redirect:/member/sign-in";
+        model.addAttribute("loginMsg", flag);
+        return "member/sign-in";
 
     }
 
