@@ -115,12 +115,22 @@ public class BoardController {
         return flag ? "redirect:/board/list" : "redirect:/";
     }
 
-    // 게시물 삭제 요청
+    // 게시물 삭제 확인 요청
     @GetMapping("/delete")
-    public String delete(Long boardNo) {
+    public String delete(@ModelAttribute("boardNo") Long boardNo, Model model) {
+
         log.info("controller request /board/delete GET! - bno: {}", boardNo);
-        return boardService.removeService(boardNo)
-                ? "redirect:/board/list" : "redirect:/";
+
+        model.addAttribute("validate", boardService.getMember(boardNo));
+
+        return "board/process-delete";
+    }
+
+    // 게시물 삭제 확정 요청
+    @PostMapping("/delete")
+    public String delete(Long boardNo) {
+        log.info("controller request /board/delete POST! - bno: {}", boardNo);
+        return boardService.removeService(boardNo) ? "redirect:/board/list" : "redirect:/";
     }
 
     // 수정 화면 요청
@@ -131,6 +141,8 @@ public class BoardController {
         log.info("find article: {}", board);
 
         model.addAttribute("board", board);
+        model.addAttribute("validate", boardService.getMember(boardNo));
+
         return "board/board-modify";
     }
 
