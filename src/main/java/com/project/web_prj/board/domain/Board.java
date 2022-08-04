@@ -22,13 +22,14 @@ public class Board {
     private String content;
     private Long viewCnt;
     private Date regDate;
+    private String account;
 
     // Custom Table Fields
     private String shortTitle;
     private String prettierDate;
     private boolean newArticle; // 신규 게시물 여부
     private int replyCount; // 댓글수
-    
+
     private List<String> fileNames; // 첨부파일들의 이름 목록
 
     public Board(ResultSet rs) throws SQLException {

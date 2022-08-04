@@ -52,6 +52,7 @@
             color: #fff !important;
         }
 
+
         .uploaded-list {
             display: flex;
         }
@@ -93,13 +94,17 @@
 
             </div>
 
-            <!-- 업로드된 파일의 썸네일을 보여줄 영역 -->
-            <div class="uploaded-list">
+            <!-- 파일 첨부 영역 -->
+            <div class="form-group">
+                <ul class="uploaded-list"></ul>
             </div>
 
             <div class="btn-group btn-group-lg custom-btn-group" role="group">
-                <button id="mod-btn" type="button" class="btn btn-warning">수정</button>
-                <button id="del-btn" type="button" class="btn btn-danger">삭제</button>
+
+                <c:if test="${loginUser.account == b.account || loginUser.auth == 'ADMIN'}">
+                    <button id="mod-btn" type="button" class="btn btn-warning">수정</button>
+                    <button id="del-btn" type="button" class="btn btn-danger">삭제</button>
+                </c:if>
                 <button id="list-btn" type="button" class="btn btn-dark">목록</button>
             </div>
 
@@ -127,6 +132,9 @@
                                             class="btn btn-dark form-control">등록</button>
                                     </div>
                                 </div>
+
+
+
                             </div>
                         </div>
                     </div> <!-- end reply write -->
@@ -190,7 +198,10 @@
 
             <!-- end replyModifyModal -->
 
+
+
         </div>
+
 
         <%@ include file="../include/footer.jsp" %>
     </div>
@@ -198,23 +209,32 @@
 
     <!-- 게시글 상세보기 관련 script -->
     <script>
-        const [$modBtn, $delBtn, $listBtn] = [...document.querySelector('div[role=group]').children];
+        // const [$modBtn, $delBtn, $listBtn] = [...document.querySelector('div[role=group]').children];
 
-        // const $modBtn = document.getElementById('mod-btn');
-        //수정버튼
-        $modBtn.onclick = e => {
-            location.href = '/board/modify?boardNo=${b.boardNo}';
-        };
+        const $modBtn = document.getElementById('mod-btn');
+        const $delBtn = document.getElementById('del-btn');
+        const $listBtn = document.getElementById('list-btn');
 
-        //삭제버튼
-        $delBtn.onclick = e => {
-            if (!confirm('정말 삭제하시겠습니까?')) {
-                return;
-            }
-            location.href = '/board/delete?boardNo=${b.boardNo}';
-        };
+        if ($modBtn !== null) {
+            //수정버튼
+            $modBtn.onclick = e => {
+                location.href = '/board/modify?boardNo=${b.boardNo}';
+            };
+        }
+
+        if ($delBtn !== null) {
+
+            //삭제버튼
+            $delBtn.onclick = e => {
+                if (!confirm('정말 삭제하시겠습니까?')) {
+                    return;
+                }
+                location.href = '/board/delete?boardNo=${b.boardNo}';
+            };
+        }
         //목록버튼
         $listBtn.onclick = e => {
+            console.log('목록버튼 클릭!');
             location.href = '/board/list?pageNum=${p.pageNum}&amount=${p.amount}';
         };
     </script>
@@ -297,6 +317,8 @@
 
             // ul에 마지막페이지 번호 저장.
             $pageUl.dataset.fp = pageInfo.finalPage;
+
+
         }
 
 
@@ -310,7 +332,6 @@
             let tag = '';
 
             if (replyList === null || replyList.length === 0) {
-
                 tag += "<div id='replyContent' class='card-body'>댓글이 아직 없습니다! ㅠㅠ</div>";
 
             } else {
@@ -342,6 +363,9 @@
 
             // 페이지 렌더링
             makePageDOM(maker);
+
+
+
         }
 
         // 댓글 목록을 서버로부터 비동기요청으로 불러오는 함수
@@ -350,6 +374,7 @@
             fetch(URL + '?boardNo=' + bno + '&pageNum=' + pageNum)
                 .then(res => res.json())
                 .then(replyMap => {
+                    // console.log(replyMap.replyList);
                     makeReplyDOM(replyMap);
                 });
         }
@@ -498,6 +523,7 @@
                         })
                     };
 
+
                     fetch(URL + '/' + rno, reqInfo)
                         .then(res => res.text())
                         .then(msg => {
@@ -511,6 +537,8 @@
                         });
                 };
         }
+
+
 
         // 메인 실행부
         (function () {
@@ -530,6 +558,9 @@
             // 댓글 수정 완료 버튼 이벤트 처리
             replyModifyEvent();
 
+
+
+
         })();
     </script>
 
@@ -548,15 +579,6 @@
 
                 //원본 파일 명 추출
                 let originFileName = fileName.substring(fileName.indexOf("_") + 1);
-
-
-                // hidden input을 만들어서 변환파일명을 서버로 넘김
-                const $hiddenInput = document.createElement('input');
-                $hiddenInput.setAttribute('type', 'hidden');
-                $hiddenInput.setAttribute('name', 'fileNames');
-                $hiddenInput.setAttribute('value', fileName);
-
-                $('#write-form').append($hiddenInput);
 
                 //확장자 추출후 이미지인지까지 확인
                 if (isImageFile(originFileName)) { // 파일이 이미지라면
@@ -600,23 +622,22 @@
                 }
             }
 
-            fetch('/board/file/' + bno)
-                .then(res => {
-                    console.log(res.status);
-                    return res.json();
-                })
-                .then(files => {
-                    console.log(files);
+            // 파일 목록 불러오기
+            function showFileList() {
+                fetch('/board/file/' + bno)
+                    .then(res => res.json())
+                    .then(fileNames => {
+                        showFileData(fileNames);
+                    });
+            }
 
-                    showFileData(files);
-                });
+            showFileList();
+
+
 
         });
-
         // end jQuery
     </script>
-
-
 
 </body>
 
