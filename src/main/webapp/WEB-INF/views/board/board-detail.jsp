@@ -444,7 +444,7 @@
                     if (msg === 'insert-success') {
                         alert('댓글 등록 성공');
                         // 댓글 입력창 리셋
-                        $writerInput.value = '';
+                        // $writerInput.value = '';
                         $contentInput.value = '';
                         // 댓글 목록 재요청
                         showReplies(document.querySelector('.pagination').dataset.fp);
