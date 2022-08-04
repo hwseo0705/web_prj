@@ -31,7 +31,7 @@ public class BoardInterceptor implements HandlerInterceptor {
         if (!LoginUtils.isLogin(session)) {
             log.info("board interceptor preHandle() - request denied!!");
 //            dispatcher.forward(request, response);
-            response.sendRedirect("/member/sign-in");
+            response.sendRedirect("/member/sign-in?message=no-login");
             return false;
         }
         return true;

@@ -51,7 +51,7 @@ public class MemberController {
 
     // 로그인 화면을 열어주는 요청처리
     @GetMapping("/sign-in")
-    public void signIn(HttpServletRequest request) {
+    public void signIn(@ModelAttribute("message") String message, HttpServletRequest request) {
         log.info("/member/sign-in GET! - forwarding to sign-in.jsp");
 
         // 요청 정보 헤더 안에는 Referer라는 키가 있는데
