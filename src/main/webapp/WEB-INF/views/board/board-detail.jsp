@@ -464,7 +464,7 @@
             //console.log('댓글내용:', replyText);
 
             // 모달에 해당 댓글내용을 배치한다.
-            document.getElementById('modReplyText').textContent = replyText;
+            document.getElementById('modReplyText').value = replyText;
 
             // 모달을 띄울 때 다음 작업(수정완료처리)을 위해 댓글번호를 모달에 달아두자.
             const $modal = document.querySelector('.modal');
