@@ -3,7 +3,7 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="com.project.web_prj.reply.repository.ReplyMapper">
+<mapper namespace="com.project.web_prj.reply.service.repository.ReplyMapper">
 
     <resultMap id="replyMap" type="com.project.web_prj.reply.domain.Reply">
         <result property="replyNo" column="reply_no"/>

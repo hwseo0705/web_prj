@@ -5,7 +5,7 @@ import com.project.web_prj.board.dto.ValidateMemberDTO;
 import com.project.web_prj.board.repository.BoardMapper;
 import com.project.web_prj.common.paging.Page;
 import com.project.web_prj.common.search.Search;
-import com.project.web_prj.reply.repository.ReplyMapper;
+import com.project.web_prj.reply.service.repository.ReplyMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Service;
