@@ -19,7 +19,10 @@ public interface MemberMapper {
 
     // 회원정보 조회 기능
     Member findUser(String account);
-    
+
     // 자동 로그인 쿠키정보 저장
     void saveAutoLoginValue(AutoLoginDTO dto);
+
+    // 쿠키값(세션아이디)을 가지고 있는 회원정보 조회
+    Member findMemberBySessionId(String sessionId);
 }
