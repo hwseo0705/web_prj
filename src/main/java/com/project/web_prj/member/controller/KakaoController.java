@@ -53,9 +53,9 @@ public class KakaoController {
             session.setAttribute("profile_path", userInfo.getProfileImg());
             session.setAttribute(LOGIN_FROM, KAKAO);
             session.setAttribute("accessToken", accessToken);
-            return "redirect:/kakao-test";
+            return "redirect:/";
         }
-        return "redirect:/kakao-test";
+        return "redirect:/member/sign-in";
     }
 
     // 카카오 로그아웃

@@ -2,7 +2,6 @@ package com.project.web_prj.reply.repository;
 
 import com.project.web_prj.common.paging.Page;
 import com.project.web_prj.reply.domain.Reply;
-import com.project.web_prj.reply.service.repository.ReplyMapper;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

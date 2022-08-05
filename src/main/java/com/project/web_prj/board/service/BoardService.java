@@ -5,7 +5,7 @@ import com.project.web_prj.board.dto.ValidateMemberDTO;
 import com.project.web_prj.board.repository.BoardMapper;
 import com.project.web_prj.common.paging.Page;
 import com.project.web_prj.common.search.Search;
-import com.project.web_prj.reply.service.repository.ReplyMapper;
+import com.project.web_prj.reply.repository.ReplyMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Service;
@@ -85,6 +85,7 @@ public class BoardService {
         Map<String, Object> findDataMap = new HashMap<>();
 
         List<Board> boardList = boardMapper.findAll2(search);
+        log.info("{}", boardList);
 
         // 목록 중간 데이터 처리
         processConverting(boardList);
@@ -107,7 +108,10 @@ public class BoardService {
     }
 
     private void setReplyCount(Board b) {
-        b.setReplyCount(replyMapper.getReplyCount(b.getBoardNo()));
+        log.info("board_no - {}", b.getBoardNo());
+        int replyCount = replyMapper.getReplyCount(b.getBoardNo());
+        log.info("reply_count - {}", replyCount);
+        b.setReplyCount(replyCount);
     }
 
     // 신규 게시물 여부 처리

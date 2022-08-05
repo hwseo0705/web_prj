@@ -1,4 +1,4 @@
-package com.project.web_prj.reply.service.repository;
+package com.project.web_prj.reply.repository;
 
 import com.project.web_prj.common.paging.Page;
 import com.project.web_prj.reply.domain.Reply;

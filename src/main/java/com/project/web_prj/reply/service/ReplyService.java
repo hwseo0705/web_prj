@@ -3,7 +3,7 @@ package com.project.web_prj.reply.service;
 import com.project.web_prj.common.paging.Page;
 import com.project.web_prj.common.paging.PageMaker;
 import com.project.web_prj.reply.domain.Reply;
-import com.project.web_prj.reply.service.repository.ReplyMapper;
+import com.project.web_prj.reply.repository.ReplyMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
