@@ -32,4 +32,9 @@ public class Page {
         }
         this.amount = amount;
     }
+
+    // MariaDB LIMIT 첫번째 숫자 고르기
+    public int getStart() {
+        return (pageNum - 1) * amount;
+    }
 }

@@ -31,6 +31,7 @@ class BoardRepositoryImplTest {
             board.setTitle("제목" + i);
             board.setWriter("글쓴이" + i);
             board.setContent("내용입니다~~" + i);
+            board.setAccount("abcde");
             repository.save(board);
         }
     }

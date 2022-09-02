@@ -52,6 +52,9 @@ dependencies {
 
     //gson (JSON 파싱 라이브러리)
     implementation 'com.google.code.gson:gson:2.8.5'
+
+    // 마리아디비 커넥터 라이브러리 : https://mvnrepository.com/artifact/org.mariadb.jdbc/mariadb-java-client
+    implementation 'org.mariadb.jdbc:mariadb-java-client:3.0.6'
 }
 
 tasks.named('test') {
